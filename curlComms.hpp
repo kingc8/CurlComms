@@ -80,9 +80,19 @@ size_t feedback2string(void* ptr, size_t size, size_t nmemb, string& stream)
         return 0; // Indicate an error to Curl
     }
 
-    string temp(static_cast<const char*>(ptr), size * nmemb);
-    stream.reserve(stream.size() + temp.size()); // Reserve space for the new data
-    stream = stream + temp;
+    const char* data = static_cast<const char*>(ptr);
+    string temp(data, size * nmemb);
+	
+    // Ensure proper initialization of 'stream'
+    if (stream.empty())
+        stream = temp;
+    else
+    {
+        // Reserve space for the new data
+	stream.reserve(stream.size() + temp.size());
+	stream += temp;
+    }
+
     return size * nmemb;
 }
 
